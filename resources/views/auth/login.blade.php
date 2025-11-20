@@ -15,7 +15,7 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.82)),
-                    url('{{ asset('public/images/Background.jpg') }}') center/cover no-repeat;
+                    url('{{ asset('images/Background.jpg') }}') center/cover no-repeat;
     }
     .login-card {
         width: 100%;
