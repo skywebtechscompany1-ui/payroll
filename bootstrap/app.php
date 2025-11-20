@@ -3,6 +3,7 @@
 use App\Console\Kernel as ConsoleKernel;
 use App\Exceptions\Handler as AppExceptionHandler;
 use App\Http\Kernel as HttpKernel;
+use App\Http\Middleware\ForceHttps;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
@@ -28,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(ForceHttps::class);
+
         $middleware->alias([
             'role' => \Laratrust\Middleware\LaratrustRole::class,
             'permission' => \Laratrust\Middleware\LaratrustPermission::class,
