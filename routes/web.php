@@ -24,6 +24,7 @@ Route::get('/fetch-users',function(){
 });
 
 Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('/', 'Auth\LoginController@login');
 Route::get('/login', 'Auth\LoginController@showLoginForm');
 Route::post('/login', 'Auth\LoginController@login')->name('login.perform');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
