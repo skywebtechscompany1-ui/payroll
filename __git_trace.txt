@@ -1,0 +1,2 @@
+{"event":"version","sid":"20251120T070837.853894Z-H8b4b0b70-P00005818","thread":"main","time":"2025-11-20T07:08:37.882887Z","file":"common-main.c","line":57,"evt":"4","exe":"2.47.1.windows.1"}
+{"event":"start","sid":"20251120T070837.853894Z-H8b4b0b70-P00005818","thread":"main","time":"2025-11-20T07:08:37.883887Z","file":"common-main.c","line":58,"t_abs":0.056316,"argv":["git.exe","add","."]}
