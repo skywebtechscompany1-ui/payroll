@@ -141,7 +141,7 @@ class ErrorLog extends Model
     /**
      * Mark the error as resolved.
      */
-    public function markAsResolved(string $notes = null, int $resolvedBy = null): void
+    public function markAsResolved(?string $notes = null, ?int $resolvedBy = null): void
     {
         $this->update([
             'resolved' => true,
