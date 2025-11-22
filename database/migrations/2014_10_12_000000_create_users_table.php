@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration {
 			$table->text('experience')->nullable();
 			$table->text('reference')->nullable();
 
-			$table->tinyInteger('id_name')->nullable()->comment('1 for NID, 2 Passport, 3 for Driving License');
+			$table->tinyInteger('id_name')->nullable(); // 1 for NID, 2 Passport, 3 for Driving License
 			$table->string('id_number')->nullable();
 			$table->string('contact_no_one', 30);
 			$table->string('contact_no_two', 30)->nullable();
@@ -39,12 +39,12 @@ class CreateUsersTable extends Migration {
 			$table->string('web')->nullable();
 			$table->string('gender', 1);
 			$table->date('date_of_birth')->nullable();
-			$table->tinyInteger('marital_status')->nullable()->comment('1 for Married, Single, 3 for Divorced, 4 for Separated, 5 for Widowed');
+			$table->tinyInteger('marital_status')->nullable(); // 1 for Married, Single, 3 for Divorced, 4 for Separated, 5 for Widowed
 			$table->string('avatar')->nullable();
 			$table->integer('client_type_id')->nullable();
 			$table->integer('designation_id')->nullable();
 			$table->integer('joining_position')->nullable();
-			$table->tinyInteger('access_label')->comment('1 for superadmin, 2 for associates, 3 for employees, 4 for references and 5 for clients');
+			$table->tinyInteger('access_label'); // 1 for superadmin, 2 for associates, 3 for employees, 4 for references and 5 for clients
 			$table->string('role')->nullable();
 			$table->tinyInteger('activation_status')->default(0);
 			$table->tinyInteger('deletion_status')->default(0);

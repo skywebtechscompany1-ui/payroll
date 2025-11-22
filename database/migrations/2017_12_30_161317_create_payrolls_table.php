@@ -15,7 +15,7 @@ class CreatePayrollsTable extends Migration {
 			$table->increments('id');
 			$table->integer('created_by');
 			$table->integer('user_id');
-			$table->tinyInteger('employee_type')->comment('1 for Provision & 2 for Permanent');
+			$table->tinyInteger('employee_type'); // 1 for Provision & 2 for Permanent
 			$table->string('basic_salary')->nullable();
 			$table->string('house_rent_allowance')->nullable();
 			$table->string('medical_allowance')->nullable();
