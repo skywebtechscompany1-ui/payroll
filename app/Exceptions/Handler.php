@@ -327,7 +327,7 @@ class Handler extends ExceptionHandler
     /**
      * Handle web exceptions
      */
-    protected function handleWebException(Request $request, Throwable $e): Response
+    protected function handleWebException($request, Throwable $e)
     {
         $exception = $this->prepareException($e);
 
