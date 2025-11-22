@@ -3,17 +3,30 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateUsersTableRepaired extends Migration {
+
+    public function __construct()
+    {
+        // Force reconnection to clear any aborted transactions from boot-time queries (e.g. Laratrust)
+        // This ensures the migration starts with a clean connection.
+        try {
+            DB::reconnect();
+        } catch (\Exception $e) {
+            // ignore
+        }
+    }
+
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		// Removed Schema::hasTable check to avoid transaction aborts on Postgres if the check fails silently.
-		Schema::create('users', function (Blueprint $table) {
-			$table->increments('id');
+		if (!Schema::hasTable('users')) {
+			Schema::create('users', function (Blueprint $table) {
+				$table->increments('id');
 				$table->integer('created_by')->nullable();
 				$table->string('employee_id')->nullable();
 				$table->string('name');
@@ -59,6 +72,7 @@ class CreateUsersTableRepaired extends Migration {
 				$table->rememberToken();
 				$table->timestamps();
 			});
+		}
 	}
 
 	/**
