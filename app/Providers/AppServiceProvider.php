@@ -27,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
     {
         // Reset connection if running in console to clear any aborted transactions from boot-time queries
         if ($this->app->runningInConsole()) {
+            // Ensure 'options' is an array to prevent array_diff_key error in Connector.php
+            // This handles cases where DATABASE_URL parsing or environment variables inject a string.
+            $default = config('database.default');
+            $options = config("database.connections.$default.options");
+            if (!is_array($options)) {
+                config(["database.connections.$default.options" => []]);
+            }
+
             try {
                 DB::reconnect();
             } catch (\Exception $e) {
