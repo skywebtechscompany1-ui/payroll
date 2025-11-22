@@ -91,7 +91,7 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      */
-    public function render($request, Throwable $e): Response
+    public function render($request, Throwable $e)
     {
         // Log the exception
         $this->logException($e);
