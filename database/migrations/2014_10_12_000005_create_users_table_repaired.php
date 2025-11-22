@@ -9,12 +9,24 @@ class CreateUsersTableRepaired extends Migration {
 
     public function __construct()
     {
-        // Force reconnection to clear any aborted transactions from boot-time queries (e.g. Laratrust)
-        // This ensures the migration starts with a clean connection.
+        // Aggressively reset connection state to handle any aborted transactions from boot-time queries.
+        // Laratrust or other packages might have poisoned the connection before migration starts.
         try {
+            // Attempt to rollback any active/aborted transaction
+            DB::rollBack();
+        } catch (\Exception $e) {
+        }
+
+        try {
+            // Purge the connection to force a fresh PDO instance
+            DB::purge();
+        } catch (\Exception $e) {
+        }
+
+        try {
+            // Reconnect to ensure we have a clean slate
             DB::reconnect();
         } catch (\Exception $e) {
-            // ignore
         }
     }
 
@@ -24,9 +36,11 @@ class CreateUsersTableRepaired extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		if (!Schema::hasTable('users')) {
-			Schema::create('users', function (Blueprint $table) {
-				$table->increments('id');
+		// Removed Schema::hasTable check. If the table exists, this will fail with "table exists"
+        // which is better than "transaction aborted" masking the real issue.
+        // Given the environment history, forcing creation is the goal.
+		Schema::create('users', function (Blueprint $table) {
+			$table->increments('id');
 				$table->integer('created_by')->nullable();
 				$table->string('employee_id')->nullable();
 				$table->string('name');
@@ -72,7 +86,6 @@ class CreateUsersTableRepaired extends Migration {
 				$table->rememberToken();
 				$table->timestamps();
 			});
-		}
 	}
 
 	/**
