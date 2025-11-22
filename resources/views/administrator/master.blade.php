@@ -107,6 +107,9 @@
         <!-- Performance Optimizations -->
         @include('administrator.partials.performance')
 
+        <!-- Responsive Testing (Development Only) -->
+        @include('administrator.partials.responsive-test')
+
         <!-- Logo Modal (modernized) -->
         <div class="modal fade" id="logo-modal" tabindex="-1" aria-labelledby="logoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
