@@ -1,0 +1,123 @@
+// ===================================
+// CUSTOM VARIABLES
+// ===================================
+
+// Brand Colors
+$brand-primary: $primary;
+$brand-secondary: $secondary;
+$brand-success: $success;
+$brand-info: $info;
+$brand-warning: $warning;
+$brand-danger: $danger;
+
+// Status Colors
+$status-online: $success;
+$status-offline: $secondary;
+$status-busy: $warning;
+$status-away: $info;
+
+// Semantic Colors
+$color-positive: $green-500;
+$color-negative: $red-500;
+$color-neutral: $gray-500;
+$color-warning: $orange-500;
+
+// Sidebar Colors
+$sidebar-bg: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 80px;
+
+// Header Colors
+$header-height: 76px;
+$header-bg: #fff;
+$header-border: #e9ecef;
+
+// Card Colors
+$card-bg: #fff;
+$card-border: #e9ecef;
+$card-shadow: $box-shadow-sm;
+$card-shadow-hover: $box-shadow-md;
+
+// Table Colors
+$table-stripe-bg: rgba($primary, 0.02);
+$table-hover-bg: rgba($primary, 0.04);
+$table-border: #e9ecef;
+
+// Form Colors
+$input-bg: #fff;
+$input-border: #ced4da;
+$input-border-focus: $primary;
+$input-border-invalid: $danger;
+$input-border-valid: $success;
+
+// Button Colors
+$btn-min-height: 44px;
+$btn-font-weight: $font-weight-medium;
+$btn-border-radius: $border-radius;
+$btn-transition: $transition-base;
+
+// Loading States
+$loading-opacity: 0.6;
+$loading-spinner-size: 1rem;
+
+// Animation Durations
+$animation-fast: 0.15s;
+$animation-normal: 0.3s;
+$animation-slow: 0.5s;
+
+// Z-index Scale Extended
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+$z-index-toast: 1080;
+$z-index-sidebar: 1090;
+$z-index-header: 1100;
+
+// Breakpoint-specific variables
+$mobile-breakpoint: 767.98px;
+$tablet-breakpoint: 991.98px;
+$desktop-breakpoint: 1199.98px;
+
+// Custom shadows
+$shadow-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+$shadow-elevation-2: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+$shadow-elevation-3: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+$shadow-elevation-4: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+$shadow-elevation-5: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+
+// Gradient Definitions
+$gradient-primary: linear-gradient(135deg, $primary 0%, shade-color($primary, 15%) 100%);
+$gradient-success: linear-gradient(135deg, $success 0%, shade-color($success, 15%) 100%);
+$gradient-info: linear-gradient(135deg, $info 0%, shade-color($info, 15%) 100%);
+$gradient-warning: linear-gradient(135deg, $warning 0%, shade-color($warning, 15%) 100%);
+$gradient-danger: linear-gradient(135deg, $danger 0%, shade-color($danger, 15%) 100%);
+
+// Custom font sizes
+$font-xs: 0.75rem;    // 12px
+$font-sm: 0.875rem;   // 14px
+$font-base: 1rem;     // 16px
+$font-lg: 1.125rem;   // 18px
+$font-xl: 1.25rem;    // 20px
+$font-2xl: 1.5rem;    // 24px
+$font-3xl: 1.875rem;  // 30px
+$font-4xl: 2.25rem;   // 36px
+$font-5xl: 3rem;      // 48px
+
+// Line heights
+$leading-tight: 1.25;
+$leading-snug: 1.375;
+$leading-normal: 1.5;
+$leading-relaxed: 1.625;
+$leading-loose: 2;
+
+// Letter spacing
+$tracking-tighter: -0.05em;
+$tracking-tight: -0.025em;
+$tracking-normal: 0em;
+$tracking-wide: 0.025em;
+$tracking-wider: 0.05em;
+$tracking-widest: 0.1em;
