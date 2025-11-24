@@ -1,0 +1,21 @@
+"""
+Department management endpoints
+"""
+
+from typing import Any
+from fastapi import APIRouter, Depends
+
+from app.api import deps
+
+router = APIRouter()
+
+
+@router.get("/")
+async def get_departments(
+    current_user: dict = Depends(deps.get_current_user_with_permission("employees:read"))
+) -> Any:
+    """
+    Get list of departments
+    """
+    # TODO: Implement department listing
+    return {"message": "Department endpoints - to be implemented"}
