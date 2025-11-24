@@ -11,14 +11,7 @@ import {
   ArcElement,
   RadialLinearScale
 } from 'chart.js'
-import {
-  LineChart,
-  BarChart,
-  DoughnutChart,
-  PieChart,
-  PolarAreaChart,
-  RadarChart
-} from 'vue-chartjs'
+import { Line, Bar, Doughnut, Pie, PolarArea, Radar } from 'vue-chartjs'
 
 // Register Chart.js components
 ChartJS.register(
@@ -35,12 +28,13 @@ ChartJS.register(
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('LineChart', LineChart)
-  nuxtApp.vueApp.component('BarChart', BarChart)
-  nuxtApp.vueApp.component('DoughnutChart', DoughnutChart)
-  nuxtApp.vueApp.component('PieChart', PieChart)
-  nuxtApp.vueApp.component('PolarAreaChart', PolarAreaChart)
-  nuxtApp.vueApp.component('RadarChart', RadarChart)
+  // Register chart components using vue-chartjs v5 approach
+  nuxtApp.vueApp.component('LineChart', Line)
+  nuxtApp.vueApp.component('BarChart', Bar)
+  nuxtApp.vueApp.component('DoughnutChart', Doughnut)
+  nuxtApp.vueApp.component('PieChart', Pie)
+  nuxtApp.vueApp.component('PolarAreaChart', PolarArea)
+  nuxtApp.vueApp.component('RadarChart', Radar)
 
   return {
     provide: {
