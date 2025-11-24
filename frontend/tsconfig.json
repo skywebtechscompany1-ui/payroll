@@ -21,6 +21,7 @@
     },
     "types": [
       "@nuxt/types",
+      "@nuxt/vue-app",
       "@nuxtjs/tailwindcss",
       "@vueuse/core",
       "vite/client"
