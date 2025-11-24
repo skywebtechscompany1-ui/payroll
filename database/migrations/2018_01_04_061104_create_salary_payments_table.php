@@ -21,7 +21,7 @@ class CreateSalaryPaymentsTable extends Migration {
 			$table->string('provident_fund')->nullable();
 			$table->string('payment_amount');
 			$table->date('payment_month');
-			$table->tinyInteger('payment_type')->comment('1 for cash payment, 2 for chaque payment & 3 for bank payment');
+			$table->tinyInteger('payment_type'); // 1 for cash payment, 2 for chaque payment & 3 for bank payment
 			$table->text('note')->nullable();
 			$table->timestamps();
 		});

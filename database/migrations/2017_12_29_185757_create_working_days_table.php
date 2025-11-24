@@ -15,7 +15,7 @@ class CreateWorkingDaysTable extends Migration {
 			$table->increments('id');
 			$table->integer('updated_by');
 			$table->string('day', 10);
-			$table->tinyInteger('working_status')->comment('0 for holiday & 1 for working day');
+			$table->tinyInteger('working_status'); // 0 for holiday & 1 for working day
 			$table->timestamps();
 		});
 	}
