@@ -154,6 +154,20 @@ class RolePermissions:
         "settings:read": ["superadmin", "admin", "hr"],
         "settings:update": ["superadmin", "admin"],
         "settings:delete": ["superadmin", "admin"],
+
+        # Activity logs
+        "activity_logs:read": ["superadmin", "admin"],
+        
+        # Roles
+        "roles:create": ["superadmin"],
+        "roles:read": ["superadmin", "admin"],
+        "roles:update": ["superadmin"],
+        "roles:delete": ["superadmin"],
+        
+        # Payslips
+        "payslips:create": ["superadmin", "admin", "hr"],
+        "payslips:read": ["superadmin", "admin", "hr", "manager", "employee"],
+        "payslips:download": ["superadmin", "admin", "hr", "manager", "employee"],
     }
 
     @classmethod

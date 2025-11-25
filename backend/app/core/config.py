@@ -3,7 +3,8 @@ Application configuration settings
 """
 
 from typing import List, Optional
-from pydantic import BaseSettings, validator
+from pydantic import validator
+from pydantic_settings import BaseSettings
 import secrets
 from pathlib import Path
 
@@ -20,6 +21,10 @@ class Settings(BaseSettings):
 
     # Redis settings
     REDIS_URL: str = "redis://localhost:6379"
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: Optional[str] = None
 
     # JWT settings
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15

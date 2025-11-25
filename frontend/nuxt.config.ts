@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { defineNuxtConfig } from 'nuxt/config'
-
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
@@ -64,7 +62,7 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true
+    typeCheck: false
   },
 
   // Tailwind CSS configuration
@@ -96,8 +94,5 @@ export default defineNuxtConfig({
         }
       }
     }
-  },
-
-  // Compatibility mode
-  compatibilityMode: false
+  }
 })

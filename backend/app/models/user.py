@@ -2,7 +2,7 @@
 User model - SQLAlchemy ORM model
 """
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Date, SmallInteger
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Date, SmallInteger, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -57,7 +57,7 @@ class User(Base):
     joining_position = Column(Integer, nullable=True)
 
     # Job information
-    designation_id = Column(Integer, nullable=True)
+    designation_id = Column(Integer, ForeignKey("designations.id"), nullable=True)
     access_label = Column(SmallInteger, nullable=False)  # 1: superadmin, 2: admin, 3: hr, 4: manager, 5: employee
     role = Column(String(50), nullable=True)
     client_type_id = Column(Integer, nullable=True)
@@ -87,6 +87,9 @@ class User(Base):
     # Relationships
     designation = relationship("Designation", back_populates="employees")
     department = relationship("Department", secondary="employee_departments", back_populates="employees")
+    attendance_records = relationship("Attendance", back_populates="employee", cascade="all, delete-orphan")
+    leave_requests = relationship("Leave", foreign_keys="Leave.employee_id", back_populates="employee", cascade="all, delete-orphan")
+    payroll_records = relationship("Payroll", back_populates="employee", cascade="all, delete-orphan")
 
     @property
     def is_active(self) -> bool:

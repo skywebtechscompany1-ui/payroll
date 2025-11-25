@@ -1,0 +1,1 @@
+export { default } from "file:///C:/Users/Hp/Desktop/payroll/payroll/frontend/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"

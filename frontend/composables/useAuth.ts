@@ -64,9 +64,15 @@ export const useAuth = () => {
     isLoading.value = true
     try {
       const config = useRuntimeConfig()
+      
+      // Create FormData for OAuth2 compatibility
+      const formData = new FormData()
+      formData.append('username', credentials.email)
+      formData.append('password', credentials.password)
+      
       const response = await $fetch<AuthResponse>(`${config.public.apiBase}/auth/login`, {
         method: 'POST',
-        body: credentials
+        body: formData
       })
 
       // Set authentication state
@@ -290,7 +296,7 @@ export const useAuth = () => {
 
   return {
     // State
-    user: readonly(user),
+    user: computed(() => user.value),
     token: readonly(token),
     isLoading: readonly(isLoading),
     isAuthenticated: readonly(isAuthenticated),
@@ -299,6 +305,7 @@ export const useAuth = () => {
     isManager,
 
     // Methods
+    initializeAuth,
     login,
     register,
     logout,

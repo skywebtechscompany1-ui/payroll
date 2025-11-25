@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.config import settings
 from app.core.security import verify_token
+from app.core.redis_client import is_token_blacklisted
 from app.services.user_service import UserService
 
 # OAuth2 scheme for token authentication
@@ -25,9 +26,17 @@ def get_current_user(
     token: str = Depends(oauth2_scheme)
 ) -> Dict[str, Any]:
     """
-    Get current authenticated user
+    Get current authenticated user - checks token blacklist
     """
     try:
+        # Check if token is blacklisted (logged out)
+        if is_token_blacklisted(token):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
         # Verify token
         user_id = verify_token(token, "access")
 

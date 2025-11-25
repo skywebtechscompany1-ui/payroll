@@ -1,11 +1,14 @@
 export default defineNuxtRouteMiddleware((to) => {
   const auth = useAuth()
 
-  // Check if user is authenticated
-  if (!auth.isAuthenticated) {
+  // Check if user is authenticated (access the value of computed ref)
+  if (!auth.isAuthenticated.value) {
+    console.log('Auth middleware: Not authenticated, redirecting to login')
     // Redirect to login page
     return navigateTo('/login')
   }
+
+  console.log('Auth middleware: User authenticated, allowing access')
 
   // Optional: Check if user has permission to access this route
   // This would require defining route permissions somewhere

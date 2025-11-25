@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Page header -->
-    <template #header>
+    <div class="mb-8">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -12,17 +12,17 @@
           </p>
         </div>
         <div class="flex items-center space-x-3">
-          <button class="btn btn-outline">
-            <Icon name="heroicons:arrow-down-tray" class="w-4 h-4 mr-2" />
-            Export Report
+          <button @click="exportReport" class="btn btn-outline" :disabled="exporting">
+            <Icon :name="exporting ? 'heroicons:arrow-path' : 'heroicons:arrow-down-tray'" :class="['w-4 h-4 mr-2', exporting ? 'animate-spin' : '']" />
+            {{ exporting ? 'Exporting...' : 'Export Report' }}
           </button>
-          <button class="btn btn-primary">
+          <button @click="showQuickActionsMenu = !showQuickActionsMenu" class="btn btn-primary">
             <Icon name="heroicons:plus" class="w-4 h-4 mr-2" />
             Quick Actions
           </button>
         </div>
       </div>
-    </template>
+    </div>
 
     <!-- Stats grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -73,10 +73,13 @@
         </div>
         <div class="card-body">
           <div class="h-64">
-            <LineChart
-              :chart-data="payrollChartData"
-              :chart-options="chartOptions"
-            />
+            <ClientOnly>
+              <LineChart
+                v-if="payrollChartData"
+                :data="payrollChartData"
+                :options="chartOptions"
+              />
+            </ClientOnly>
           </div>
         </div>
       </div>
@@ -90,10 +93,13 @@
         </div>
         <div class="card-body">
           <div class="h-64">
-            <DoughnutChart
-              :chart-data="departmentChartData"
-              :chart-options="doughnutChartOptions"
-            />
+            <ClientOnly>
+              <DoughnutChart
+                v-if="departmentChartData"
+                :data="departmentChartData"
+                :options="doughnutChartOptions"
+              />
+            </ClientOnly>
           </div>
         </div>
       </div>
@@ -169,40 +175,45 @@ definePageMeta({
 })
 
 const auth = useAuth()
+const api = useApi()
+const toast = useToast()
+const loading = ref(true)
+const exporting = ref(false)
+const showQuickActionsMenu = ref(false)
 
 // Reactive data
 const stats = ref([
   {
     name: 'Total Employees',
-    value: '156',
+    value: '0',
     icon: 'heroicons:users',
     iconBg: 'bg-primary-100 dark:bg-primary-900',
     iconColor: 'text-primary-600 dark:text-primary-400',
-    trend: 5.2
+    trend: 0
   },
   {
     name: 'Active Today',
-    value: '142',
+    value: '0',
     icon: 'heroicons:user-check',
     iconBg: 'bg-success-100 dark:bg-success-900',
     iconColor: 'text-success-600 dark:text-success-400',
-    trend: 2.1
+    trend: 0
   },
   {
     name: 'Pending Leaves',
-    value: '8',
+    value: '0',
     icon: 'heroicons:calendar',
     iconBg: 'bg-warning-100 dark:bg-warning-900',
     iconColor: 'text-warning-600 dark:text-warning-400',
-    trend: -12.5
+    trend: 0
   },
   {
     name: 'Monthly Payroll',
-    value: 'KES 2.4M',
+    value: 'KES 0',
     icon: 'heroicons:banknotes',
     iconBg: 'bg-secondary-100 dark:bg-secondary-900',
     iconColor: 'text-secondary-600 dark:text-secondary-400',
-    trend: 8.7
+    trend: 0
   }
 ])
 
@@ -239,7 +250,7 @@ const recentActivity = ref([
   }
 ])
 
-const quickActions = ref([
+const quickActions = computed(() => [
   {
     name: 'Add Employee',
     icon: 'heroicons:user-plus',
@@ -364,6 +375,89 @@ const handleQuickAction = (action: any) => {
     navigateTo(action.route)
   }
 }
+
+// Load dashboard data
+const loadDashboardData = async () => {
+  loading.value = true
+  try {
+    const { data, error } = await api.get('/dashboard/stats')
+    
+    if (!error && data) {
+      // Update stats with real data
+      stats.value[0].value = data.total_employees?.toString() || '0'
+      stats.value[0].trend = data.employees_trend || 0
+      
+      stats.value[1].value = data.active_today?.toString() || '0'
+      stats.value[1].trend = data.active_trend || 0
+      
+      stats.value[2].value = data.pending_leaves?.toString() || '0'
+      stats.value[2].trend = data.leaves_trend || 0
+      
+      stats.value[3].value = `KES ${(data.monthly_payroll || 0).toLocaleString()}`
+      stats.value[3].trend = data.payroll_trend || 0
+      
+      // Update chart data if available
+      if (data.payroll_chart) {
+        payrollChartData.value = data.payroll_chart
+      }
+      
+      if (data.department_chart) {
+        departmentChartData.value = data.department_chart
+      }
+      
+      // Update recent activity if available
+      if (data.recent_activity && data.recent_activity.length > 0) {
+        recentActivity.value = data.recent_activity.map((item: any) => ({
+          ...item,
+          timestamp: new Date(item.timestamp)
+        }))
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load dashboard data:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Export report function
+const exportReport = async () => {
+  exporting.value = true
+  try {
+    const reportData = {
+      stats: stats.value,
+      charts: {
+        payroll: payrollChartData.value,
+        departments: departmentChartData.value
+      },
+      activity: recentActivity.value,
+      generated_at: new Date().toISOString(),
+      generated_by: auth.user?.name
+    }
+    
+    // Convert to JSON and download
+    const dataStr = JSON.stringify(reportData, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `dashboard-report-${new Date().toISOString().split('T')[0]}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+    
+    toast.success('Report exported successfully!')
+  } catch (error) {
+    console.error('Export failed:', error)
+    toast.error('Failed to export report')
+  } finally {
+    exporting.value = false
+  }
+}
+
+// Load data on mount
+onMounted(() => {
+  loadDashboardData()
+})
 
 // Page metadata
 useHead({

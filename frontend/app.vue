@@ -1,11 +1,11 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
+  <div>
     <ClientOnly>
-      <ToastContainer />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </ClientOnly>
-    <UNotifications />
-  </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -24,7 +24,7 @@ useHead({
   link: [
     { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
     { href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap', rel: 'stylesheet' }
   ]
 })
@@ -39,11 +39,11 @@ onMounted(async () => {
     document.documentElement.classList.remove('dark')
   }
 
-  // Check for authentication status
+  // Initialize auth from localStorage
   const auth = useAuth()
-  if (process.client) {
-    await auth.checkAuthStatus()
-  }
+  auth.initializeAuth()
+  
+  console.log('App initialized. Authenticated:', auth.isAuthenticated.value)
 })
 </script>
 
