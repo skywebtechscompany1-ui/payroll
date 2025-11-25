@@ -95,11 +95,13 @@ app.add_middleware(
 )
 
 # 5. Trusted host (if not allowing all hosts)
-if settings.ALLOWED_HOSTS != ["*"]:
-    app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=settings.ALLOWED_HOSTS
-    )
+# Note: TrustedHostMiddleware disabled for cloud deployments
+# Cloud platforms like Render handle host validation at the infrastructure level
+# if settings.ALLOWED_HOSTS != ["*"]:
+#     app.add_middleware(
+#         TrustedHostMiddleware,
+#         allowed_hosts=settings.ALLOWED_HOSTS
+#     )
 
 
 # Global exception handlers
