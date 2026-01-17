@@ -54,6 +54,7 @@ class PaymentResponse(PaymentBase):
     updated_at: datetime
     completed_at: Optional[datetime]
     status_name: Optional[str] = None
+    employee_name: Optional[str] = None  # Employee name for display
 
     class Config:
         from_attributes = True

@@ -1,13 +1,15 @@
 """
 Payment endpoints
+Supports filtering by date range, month/year, employee, type, method, and status
 """
 
 from typing import Any, Optional
 from datetime import date
 from decimal import Decimal
+from calendar import monthrange
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, extract
 
 from app.api import deps
 from app.models.payment import Payment
@@ -26,10 +28,18 @@ async def get_payments(
     status: Optional[int] = Query(None),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
+    month: Optional[int] = Query(None, ge=1, le=12, description="Filter by month (1-12)"),
+    year: Optional[int] = Query(None, ge=2020, le=2100, description="Filter by year"),
+    search: Optional[str] = Query(None, description="Search by employee name"),
     db: Session = Depends(deps.get_db),
     current_user: dict = Depends(deps.get_current_user_with_permission("payments:read"))
 ) -> Any:
-    """Get all payments with filters"""
+    """
+    Get all payments with comprehensive filters
+    Supports filtering by month/year or date range
+    """
+    from app.models.user import User
+    
     query = db.query(Payment)
     
     if employee_id:
@@ -44,18 +54,46 @@ async def get_payments(
     if status:
         query = query.filter(Payment.status == status)
     
-    if start_date:
-        query = query.filter(Payment.payment_date >= start_date)
+    # Handle month/year filtering by converting to date range
+    if month and year:
+        # Get the first and last day of the month
+        _, last_day = monthrange(year, month)
+        month_start = date(year, month, 1)
+        month_end = date(year, month, last_day)
+        query = query.filter(
+            Payment.payment_date >= month_start,
+            Payment.payment_date <= month_end
+        )
+    elif year and not month:
+        # Filter by entire year
+        year_start = date(year, 1, 1)
+        year_end = date(year, 12, 31)
+        query = query.filter(
+            Payment.payment_date >= year_start,
+            Payment.payment_date <= year_end
+        )
+    else:
+        # Use explicit date range if provided
+        if start_date:
+            query = query.filter(Payment.payment_date >= start_date)
+        
+        if end_date:
+            query = query.filter(Payment.payment_date <= end_date)
     
-    if end_date:
-        query = query.filter(Payment.payment_date <= end_date)
+    # Search by employee name
+    if search:
+        query = query.join(User, Payment.employee_id == User.id).filter(
+            User.name.ilike(f"%{search}%")
+        )
     
     total = query.count()
     payments = query.order_by(Payment.payment_date.desc()).offset(skip).limit(limit).all()
     
-    # Add status name
+    # Add status name and employee name
     for payment in payments:
         payment.status_name = payment.get_status_name()
+        if payment.employee:
+            payment.employee_name = payment.employee.name
     
     return {"total": total, "items": payments}
 

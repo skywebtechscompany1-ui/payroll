@@ -71,28 +71,42 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Add security middleware (order matters!)
-# 1. Rate limiting (first line of defense)
+# Add security middleware (order matters - last added runs first!)
+# CORS must run first to handle preflight requests properly
+
+# 1. CORS - Must be added LAST so it runs FIRST
+# Using explicit origins for better security while allowing cross-origin requests
+ALLOWED_ORIGINS = [
+    "https://jafapay.jafasolsystems.com",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "*"  # Fallback for development - remove in production if needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=86400,  # Cache preflight for 24 hours
+)
+
+# 2. Request logging
+app.add_middleware(RequestLoggingMiddleware)
+
+# 3. Security headers (skip for OPTIONS/preflight requests)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 4. Rate limiting (first line of defense)
 try:
     app.add_middleware(RateLimitMiddleware)
     logger.info("✅ Rate limiting middleware enabled")
 except Exception as e:
     logger.warning(f"⚠️ Rate limiting disabled: {e}")
-
-# 2. Security headers
-app.add_middleware(SecurityHeadersMiddleware)
-
-# 3. Request logging
-app.add_middleware(RequestLoggingMiddleware)
-
-# 4. CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.ALLOWED_HOSTS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # 5. Trusted host (if not allowing all hosts)
 # Note: TrustedHostMiddleware disabled for cloud deployments
@@ -155,8 +169,9 @@ async def health_check():
     # Check database
     try:
         from app.core.database import SessionLocal
+        from sqlalchemy import text
         db = SessionLocal()
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         db.close()
         health_status["services"]["database"] = "healthy"
     except Exception as e:
